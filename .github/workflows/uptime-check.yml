@@ -1,8 +1,9 @@
 name: Website Uptime Monitor
 
+username: apikey
+password: ${{ secrets.SENDGRID_API_KEY }}
+
 on:
-  schedule:
-    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -23,11 +24,11 @@ jobs:
           server_port: 587
           username: apikey
           password: ${{ secrets.SENDGRID_API_KEY }}
-          subject: "Website Down Alert"
+          subject: "🚨 Website Down Alert"
           to: ${{ secrets.TO_EMAIL }}
           from: ${{ secrets.FROM_EMAIL }}
           content_type: text/html
           body: |
-            <h3>Your website is DOWN!</h3>
+            <h3>🚨 Your website is DOWN!</h3>
             <p><b>URL:</b> https://grabmeny.com</p>
             <p><b>Time:</b> ${{ github.run_started_at }}</p>
