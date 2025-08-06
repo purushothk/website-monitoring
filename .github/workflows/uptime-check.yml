@@ -1,7 +1,5 @@
 name: Website Uptime Monitor
 
-username: apikey
-password: ${{ secrets.SENDGRID_API_KEY }}
 
 on:
   workflow_dispatch:
