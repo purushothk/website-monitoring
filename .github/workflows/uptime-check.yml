@@ -1,15 +1,31 @@
-name: Website Uptime Check
+name: Website Uptime Monitor
 
 on:
   schedule:
-    - cron: '*/1 * * * *'  # Runs every 1 minutes
-  workflow_dispatch:       # Allows manual run
+    - cron: '*/1 * * * *'  # every 5 minutes
+  workflow_dispatch:
 
 jobs:
-  check-website:
+  ping:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Check if site is up
+      - name: Check Website
         run: |
-          curl -s -o /dev/null -w "%{http_code}" https://grabmany.com | grep 200 || exit 1
+          curl --fail --silent --head https://grabmany.com || exit 1
+
+      - name: Send Email on Failure
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.sendgrid.net
+          server_port: 587
+          username: apikey
+          password: ${{ secrets.SENDGRID_API_KEY }}
+          subject: "Website Down Alert"
+          to: ${{ secrets.TO_EMAIL }}
+          from: ${{ secrets.FROM_EMAIL }}
+          content_type: text/html
+          body: |
+            <h3> Website Down!</h3>
+            <p><b>URL:</b> https://yourwebsite.com</p>
+            <p><b>Time:</b> ${{ github.run_started_at }}</p>
