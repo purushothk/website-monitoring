@@ -30,4 +30,3 @@ jobs:
             <h3>Your website is down!</h3>
             <p>Checked at: ${{ github.run_started_at }}</p>
             <p>URL: https://grabmeny.com</p>
-
