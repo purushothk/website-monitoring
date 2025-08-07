@@ -2,7 +2,7 @@ name: Website Uptime Monitor
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # every 5 minutes
+    - cron: "*/5 * * * *"  # Every 5 minutes
   workflow_dispatch:
 
 jobs:
@@ -12,23 +12,22 @@ jobs:
       - name: Check Website
         id: check
         continue-on-error: true
-        run: |
-          curl --fail --silent --head https://grabmeny.com
+        run: curl --fail --silent --head https://grabmeny.com
 
       - name: Send Email if Website Down
         if: steps.check.outcome == 'failure'
         uses: dawidd6/action-send-mail@v3
         with:
-          server_address: smtp.office365.com
+          server_address: smtp.sendgrid.net
           server_port: 587
-          username: ${{ secrets.SMTP_USERNAME }}
-          password: ${{ secrets.SMTP_PASSWORD }}
+          username: ${{ secrets.SMTP_USERNAME }}  # should be "apikey"
+          password: ${{ secrets.SMTP_PASSWORD }}  # your SendGrid API key
           subject: "Website Down Alert"
           to: ${{ secrets.TO_EMAIL }}
           from: ${{ secrets.FROM_EMAIL }}
           content_type: text/html
           body: |
-            <h3>Your website is DOWN!</h3>
-            <p><b>URL:</b> https://grabmeny.com</p>
-            <p><b>Time:</b> ${{ github.run_started_at }}</p>
+            <h3>Your website is down!</h3>
+            <p>Checked at: ${{ github.run_started_at }}</p>
+            <p>URL: https://grabmeny.com</p>
 
